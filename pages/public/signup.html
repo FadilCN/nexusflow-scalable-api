@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <header class="top-bar">
+    <div class="logo">Nexus Flow</div>
+    <nav class="top-nav">
+        <a href="#">Support</a>
+        <a href="#">Contact</a>
+    </nav>
+</header>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h2>Create Account</h2>
+                <p>Join us by entering your details below</p>
+            </div>
+            
+            <form class="login-form" id="signupForm" novalidate>
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <input type="email" id="email" name="email" required autocomplete="email">
+                        <label for="email">Email</label>
+                    </div>
+                    <span class="error-message" id="emailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <input type="password" id="password" name="password" required autocomplete="new-password">
+                        <label for="password">Password</label>
+                    </div>
+                    <span class="error-message" id="passwordError"></span>
+                </div>
+
+                <div class="role-selection">
+    <p class="role-label">I am signing up as:</p>
+    <div class="radio-group">
+        <label class="radio-tile-label">
+            <input type="radio" name="role" value="user" checked>
+            <div class="radio-tile">
+                <span>User</span>
+            </div>
+        </label>
+        <label class="radio-tile-label">
+            <input type="radio" name="role" value="admin">
+            <div class="radio-tile">
+                <span>Admin</span>
+            </div>
+        </label>
+    </div>
+</div>
+                <button type="submit" class="login-btn">
+                    <span class="btn-text">Sign Up</span>
+                </button>
+                <p id="message" style="text-align: center; margin-top: 1rem; font-size: 0.9rem;"></p>
+            </form>
+
+            <div class="signup-link">
+                <p>Already have an account? <a href="signin.html">Sign In</a></p>
+            </div>
+
+            <div class="success-message" id="successMessage" style="display: none;">
+                <div class="success-icon">✓</div>
+                <h3>Account Created!</h3>
+                <p>Redirecting to login...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('signupForm');
+        const message = document.getElementById('message');
+        const successMessage = document.getElementById('successMessage');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Get selected role
+            const role = document.querySelector('input[name="role"]:checked').value;
+
+            const data = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                role: [role] // Kept as an array per your original logic
+            };
+
+            try {
+                const response = await fetch('auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    // Visual feedback
+                    form.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'signin.html';
+                    }, 2000);
+                    
+                    form.reset();
+                } else {
+                    message.style.color = "#ff4d4d";
+                    message.textContent = "Something went wrong. Email might already exist.";
+                }
+            } catch (error) {
+                message.style.color = "#ff4d4d";
+                message.textContent = "Connection error. Please try again.";
+            }
+        });
+    </script>
+</body>
+</html>
